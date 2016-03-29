@@ -1,3 +1,11 @@
+THIS VERSION OF EXPR HAS BEEN MODIFIED BY REBECCA FIEBRINK
+2016
+https://github.com/fiebrink1/expr
+
+====
+ORIGINAL README:
+
+====
 expr
 ====
 
