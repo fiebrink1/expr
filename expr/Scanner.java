@@ -2,6 +2,7 @@
 
 package expr;
 
+import java.util.HashSet;
 import java.util.Vector;
 
 
@@ -12,7 +13,7 @@ class Scanner {
 
     Vector tokens = new Vector();
     int index = -1;
-
+    
     public Scanner(String string, String operatorChars) {
         this.s = string;
 	this.operatorChars = operatorChars;
@@ -113,15 +114,50 @@ class Scanner {
         }
     }
 
+    //Modified by Rebecca Fiebrink: allow index variable names using syntax x[n], x[n-1], etc.
+    //Also allow names_with_underscores
     private int scanSymbol(int i) {
 	int from = i;
         while (i < s.length() 
 	       && (Character.isLetter(s.charAt(i))
-		   || Character.isDigit(s.charAt(i))))
+		   || Character.isDigit(s.charAt(i)) || s.charAt(i) == '_'))
             ++i;
+        if (i < s.length() && s.charAt(i) == '[') {
+            ++i;
+            if (s.charAt(i) == 'n') {
+                ++i;
+                if (s.charAt(i) == ']') {
+                    ++i;
+                } else if (s.charAt(i) == '-') {
+                    ++i;
+                    if (Character.isDigit(s.charAt(i))) {
+                        ++i;
+                        while (Character.isDigit(s.charAt(i))) {
+                            ++i;
+                        }
+                        if (s.charAt(i) == ']') {
+                            ++i;
+                        } else {
+                            throw new Error("Indexed variables must be in form varName[n-x] where x is delay, or varName[n] for no delay");
+                        }
+                    } else {
+                        throw new Error("Indexed variables must be in form varName[n-x] where x is delay, or varName[n] for no delay");
+                    }
+                }
+                
+            } else {
+                throw new Error("Indexed variables must be in form varName[n-x] where x is delay, or varName[n] for no delay");
+            }
+        }
+                
 	tokens.addElement(new Token(Token.TT_WORD, 0, s, from, i));
+        //variablesUsed.add(s.substring(from, i));
 	return i;
     }
+    
+   /* public HashSet<String> getVariablesUsed() {
+        return variablesUsed;
+    } */
 
     private int scanNumber(int i) {
 	int from = i;

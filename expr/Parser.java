@@ -4,6 +4,7 @@
 package expr;
 
 import java.io.*;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -49,6 +50,8 @@ public class Parser {
     static {
 	pi.setValue(Math.PI);
     }
+    
+    private HashSet<String> variablesUsed = new HashSet<String>();
 
     /** Return the expression denoted by the input string.
      *
@@ -86,8 +89,11 @@ public class Parser {
      *      @exception SyntaxException if the input is unparsable */
     public Expr parseString(String input) throws SyntaxException {
 	tokens = new Scanner(input, operatorChars);
-	return reparse();
+        Expr r = reparse();
+        r.setVariablesUsed(variablesUsed);
+	return r;
     }
+
 
     static private final String operatorChars = "*/+-^<>=,()";
 
@@ -217,6 +223,9 @@ public class Parser {
 	    if (null != allowedVariables && null == allowedVariables.get(var))
 		throw error("Unknown variable",
 			    SyntaxException.UNKNOWN_VARIABLE, null);
+            if (! token.sval.equals("pi")) {
+                variablesUsed.add(token.sval);
+            }
 	    nextToken();
 	    return var;
 	}

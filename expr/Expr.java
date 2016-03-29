@@ -3,6 +3,8 @@
 
 package expr;
 
+import java.util.HashSet;
+
 /**
  * A mathematical expression, built out of literal numbers, variables,
  * arithmetic and relational operators, and elementary functions.  It
@@ -14,6 +16,16 @@ public abstract class Expr {
     /** Calculate the expression's value.
      * @return the value given the current variable values */
     public abstract double value();
+    private HashSet<String> variablesUsed;
+    
+    //Modified by Rebecca Fiebrink: ability to see what variables have been used
+    public HashSet<String> getVariablesUsed() {
+        return variablesUsed;
+    }
+    
+    protected void setVariablesUsed(HashSet<String> v) {
+        variablesUsed = v;
+    }
 
     /** Binary operator: addition        */  public static final int ADD =  0;  
     /** Binary operator: subtraction     */  public static final int SUB =  1;
